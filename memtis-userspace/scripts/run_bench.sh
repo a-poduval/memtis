@@ -10,7 +10,7 @@ MEM_NODES=($(ls /sys/devices/system/node | grep node | awk -F 'node' '{print $NF
 
 CGROUP_NAME="htmm"
 ###### update DIR!
-DIR=/home/taehyung/workspace/memtis/memtis-userspace
+DIR=/mydata/memtis/memtis-userspace
 
 CONFIG_PERF=off
 CONFIG_NS=off
@@ -91,6 +91,11 @@ function func_prepare() {
 	    echo "ERROR: ${BENCH_NAME}.sh does not exist."
 	    exit -1
 	fi
+
+    # Override BENCH_DRAM if direct value was specified
+    if [[ "x${DIRECT_DRAM}" != "x" ]]; then
+        BENCH_DRAM="${DIRECT_DRAM}"
+    fi
 }
 
 function func_main() {
@@ -134,6 +139,8 @@ function func_main() {
     func_cache_flush
     sleep 2
 
+    export OMP_NUM_THREADS=16 # TODO: Configurable number of threads
+    sudo pcm-memory -csv=${LOG_DIR}/bandwidth.csv &
     ${DIR}/scripts/memory_stat.sh ${LOG_DIR} &
     if [[ "x${BENCH_NAME}" =~ "xsilo" ]]; then
 	${TIME} -f "execution time %e (s)" \
@@ -150,6 +157,7 @@ function func_main() {
     fi
 
     sudo killall -9 memory_stat.sh
+    sudo killall -9 pcm-memory
     cat /proc/vmstat | grep -e thp -e htmm -e pgmig > ${LOG_DIR}/after_vmstat.log
     sleep 2
 
@@ -165,6 +173,7 @@ function func_main() {
     sudo dmesg -c > ${LOG_DIR}/dmesg.txt
     # disable htmm
     sudo ${DIR}/scripts/set_htmm_memcg.sh htmm $$ disable
+    unset OMP_NUM_THREADS
 }
 
 function func_usage() {
@@ -173,6 +182,7 @@ function func_usage() {
     echo
     echo "  -B,   --benchmark   [arg]    benchmark name to run. e.g., graph500, Liblinear, etc"
     echo "  -R,   --ratio       [arg]    fast tier size vs. capacity tier size: \"1:16\", \"1:8\", or \"1:2\""
+    echo "  -F,   --fast-tier   [arg]    direct fast tier size (e.g., \"16GB\", \"32GB\")"
     echo "  -D,   --dram        [arg]    static dram size [MB or GB]; only available when -R is set to \"static\""
     echo "  -V,   --version     [arg]    a version name for results"
     echo "  -NS,  --nosplit              disable skewness-aware page size determination"
@@ -227,6 +237,15 @@ while (( "$#" )); do
 		exit -1
 	    fi
 	    ;;
+	-F|--fast-tier)
+        if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+        DIRECT_DRAM="$2"
+        shift 2
+        else
+        func_usage
+        exit -1
+        fi
+        ;;
 	-D|--dram)
 	    if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
 		STATIC_DRAM="$2"
