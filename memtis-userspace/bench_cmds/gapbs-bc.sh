@@ -5,7 +5,7 @@ BIN=/mydata/memtis/memtis-userspace/bench_dir/gapbs
 GRAPH_DIR=/mydata/memtis/memtis-userspace/bench_dir/gapbs/benchmark/graphs
 
 #BENCH_RUN="${BIN}/pr -f ${GRAPH_DIR}/twitter.sg -i1000 -t1e-4 -n20"
-BENCH_RUN="${BIN}/pr -f ${GRAPH_DIR}/twitter.sg -n 16"
+BENCH_RUN="${BIN}/bc -f ${GRAPH_DIR}/twitter.sg -n 16"
 BENCH_DRAM=""
 
 
