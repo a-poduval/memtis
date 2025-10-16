@@ -2,7 +2,8 @@
 
 BIN=/mydata/memtis/memtis-userspace/bench_dir/silo/out-perf.masstree/benchmarks
 #BENCH_RUN="${BIN}/dbtest --verbose --bench ycsb --num-threads 20 --scale-factor 400000 --ops-per-worker=1000000000 --slow-exit"
-BENCH_RUN="${BIN}/dbtest --verbose --bench tpcc --num-threads 16 --scale-factor 100 --ops-per-worker=1000000"
+BENCH_RUN="${BIN}/dbtest --verbose --bench tpcc --scale-factor 100 --ops-per-worker=1000000 --num-threads 20"
+BENCH_RUN_CUSTOMT="${BIN}/dbtest --verbose --bench tpcc --scale-factor 100 --ops-per-worker=1000000 --num-threads "
 BENCH_DRAM=""
 
 #####
@@ -25,5 +26,5 @@ elif [[ "x${NVM_RATIO}" == "x1:0" ]]; then
     BENCH_DRAM="70000MB"
 fi
 
-export BENCH_RUN
+export BENCH_RUN_CUSTOMT
 export BENCH_DRAM

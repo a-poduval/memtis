@@ -133,13 +133,23 @@ function func_main() {
 	echo "ERROR: abort -- change the ratio"
 	exit -1
     fi
+    # Update log dir to also specify number of threads
+    if [[ "x${BENCH_THREADS}" != "x" ]]; then
+        mkdir -p ${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}_${BENCH_THREADS}t
+        LOG_DIR=${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}_${BENCH_THREADS}t
+    fi
 
     cat /proc/vmstat | grep -e thp -e htmm -e pgmig > ${LOG_DIR}/before_vmstat.log 
     # flush cache
     func_cache_flush
     sleep 2
 
-    export OMP_NUM_THREADS=16 # TODO: Configurable number of threads
+    # Check if we have specified the number of threads. If we have, set bench run = bench run custom t
+    if [[ "x${BENCH_THREADS}" != "x" && ! "${BENCH_NAME}" =~ ^gapbs- ]]; then
+        BENCH_RUN="${BENCH_RUN_CUSTOMT} ${BENCH_THREADS}"
+    fi
+
+    export OMP_NUM_THREADS=${BENCH_THREADS} # Set OMP_NUM_THREADS for benchmarks which use OpenMP
     sudo pcm-memory -csv=${LOG_DIR}/bandwidth.csv &
     ${DIR}/scripts/memory_stat.sh ${LOG_DIR} &
     if [[ "x${BENCH_NAME}" =~ "xsilo" ]]; then
@@ -238,14 +248,23 @@ while (( "$#" )); do
 	    fi
 	    ;;
 	-F|--fast-tier)
-        if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
-        DIRECT_DRAM="$2"
-        shift 2
-        else
-        func_usage
-        exit -1
-        fi
-        ;;
+	    if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+		DIRECT_DRAM="$2"
+		shift 2
+	    else
+	    func_usage
+	    exit -1
+	    fi
+	    ;;
+	-T|--num_threads)
+	    if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+		BENCH_THREADS="$2"
+		shift 2
+	    else
+		func_usage
+		exit -1
+	    fi
+	    ;;
 	-D|--dram)
 	    if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
 		STATIC_DRAM="$2"
