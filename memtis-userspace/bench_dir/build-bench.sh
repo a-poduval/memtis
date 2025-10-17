@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail # Fail on error, unset variables, or pipes errors
-sudo apt install -y numactl libjemalloc-dev autoconf
+sudo apt install -y numactl libjemalloc-dev autoconf libnuma-dev libpmem-dev libaio-dev libssl-dev mpich libdb++-dev pcm msr-tools
 cd silo
 make dbtest -j$(nproc)
 git clone https://github.com/sbeamer/gapbs.git
