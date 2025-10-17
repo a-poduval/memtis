@@ -17,3 +17,5 @@ cd ../../liblinear
 patch -p1 < ../liblinear.diff
 make dataset
 make -j$(nproc)
+cd ../..
+make -j$(nproc)
