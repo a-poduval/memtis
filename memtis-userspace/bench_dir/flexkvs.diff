@@ -1,0 +1,13 @@
+diff --git a/memtis-userspace/bench_dir/flexkvs/bench/commandline.c b/memtis-userspace/bench_dir/flexkvs/bench/commandline.c
+index 07f372853..4bc767885 100644
+--- a/memtis-userspace/bench_dir/flexkvs/bench/commandline.c
++++ b/memtis-userspace/bench_dir/flexkvs/bench/commandline.c
+@@ -276,7 +276,7 @@ int parse_settings(int argc, char *argv[], struct settings *s)
+                 total_size = strtoull(optarg, &end, 0);
+                 // Ratio: 1:31 hashtable:segments
+                 s->hasht_size = total_size / 32;
+-                s->segmaxnum = total_size * 31 / (32 * s->segsize);
++                s->segmaxnum = 7 + total_size * 31 / (32 * s->segsize);
+                 hash_size = ((double)s->hasht_size / (1024.0 * 1024.0 * 1024.0));
+                 alloc_size = ((double)s->segmaxnum * (double)s->segsize / (1024.0 * 1024.0 * 1024.0));
+ 
