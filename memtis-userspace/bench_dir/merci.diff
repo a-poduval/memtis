@@ -1,3 +1,20 @@
+diff --git a/4_performance_evaluation/Makefile b/4_performance_evaluation/Makefile
+index 29439f6..2789f0b 100644
+--- a/4_performance_evaluation/Makefile
++++ b/4_performance_evaluation/Makefile
+@@ -1,4 +1,4 @@
+-CXX=g++-9
++CXX=g++
+ CXXFLAGS=-I. -g -O3 -W -std=c++17 -lstdc++fs -fopenmp  -march=native -ffast-math
+ 
+ all: eval_remap_only eval_baseline eval_merci
+@@ -9,4 +9,4 @@ eval_merci: src/eval_merci.cc
+ 	$(CXX) -o bin/eval_merci $< $(CXXFLAGS)
+ 
+ eval_remap_only: src/eval_remap_only.cc
+-	$(CXX) -o bin/eval_remap_only $< $(CXXFLAGS)
+\ No newline at end of file
++	$(CXX) -o bin/eval_remap_only $< $(CXXFLAGS)
 diff --git a/4_performance_evaluation/src/utils.h b/4_performance_evaluation/src/utils.h
 index 43c2bc7..9c4cf2a 100644
 --- a/4_performance_evaluation/src/utils.h
