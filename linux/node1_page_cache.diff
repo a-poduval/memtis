@@ -1,0 +1,20 @@
+diff --git a/linux/mm/filemap.c b/linux/mm/filemap.c
+index 82a17c35e..c2d69a7f4 100644
+--- a/linux/mm/filemap.c
++++ b/linux/mm/filemap.c
+@@ -1009,6 +1009,15 @@ struct page *__page_cache_alloc(gfp_t gfp)
+ 	int n;
+ 	struct page *page;
+ 
++	int pnid = 1;
++	page = __alloc_pages_node(pnid, gfp | __GFP_THISNODE, 0);
++	if (page)
++		return page;
++
++	page = __alloc_pages_node(pnid, gfp, 0);
++	if (page)
++		return page;
++
+ 	if (cpuset_do_page_mem_spread()) {
+ 		unsigned int cpuset_mems_cookie;
+ 		do {
