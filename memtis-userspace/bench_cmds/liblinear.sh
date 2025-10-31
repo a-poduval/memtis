@@ -1,5 +1,5 @@
 #!/bin/bash
-BENCH_BIN=/mydata/memtis/memtis-userspace/bench_dir/liblinear-multicore-2.49
+BENCH_BIN=/mydata/memtis/memtis-userspace/bench_dir/liblinear
 
 # anon footprint 79640MB
 # file footprint 21581MB

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-BENCHMARKS="silo gapbs-pr liblinear"
+#BENCHMARKS="silo gapbs-pr liblinear"
+BENCHMARKS="silo gapbs-bc gapbs-cc gapbs-pr liblinear merci"
 #BENCHMARKS="gapbs-pr liblinear"
 #BENCHMARKS="gapbs-pr gapbs-cc gapbs-bc"
 #BENCHMARKS="gapbs-pr"
