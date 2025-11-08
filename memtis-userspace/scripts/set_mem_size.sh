@@ -35,5 +35,3 @@ else
 fi
 
 echo ${MEM_IN_BYTES} | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/memory.max_at_node${NODE_ID}
-#echo 1-8 | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/cpuset.cpus
-echo 1-9,20-26 | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/cpuset.cpus

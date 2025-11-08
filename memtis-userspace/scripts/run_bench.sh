@@ -109,7 +109,14 @@ function func_main() {
     fi
     
     # use 20 threads 
-    PINNING="taskset -c 1-9,20-29"
+    #PINNING="taskset -c 1-9,20-29"
+    if [[ ${BENCH_THREADS} -lt 10 ]]; then
+        PINNING="taskset -c 1-${BENCH_THREADS}"
+    elif [[ ${BENCH_THREADS} -eq 10 ]]; then
+        PINNING="taskset -c 1-9,20"
+    else
+        PINNING="taskset -c 1-9,20-$((BENCH_THREADS + 10))"
+    fi
 
     echo "-----------------------"
     echo "NVM RATIO: ${NVM_RATIO}"
