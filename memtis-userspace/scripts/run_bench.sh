@@ -109,7 +109,7 @@ function func_main() {
     fi
     
     # use 20 threads 
-    PINNING="taskset -c 0-19"
+    PINNING="taskset -c 1-9,20-29"
 
     echo "-----------------------"
     echo "NVM RATIO: ${NVM_RATIO}"
@@ -117,8 +117,8 @@ function func_main() {
     echo "-----------------------"
 
     # make directory for results
-    mkdir -p ${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
-    LOG_DIR=${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
+    #mkdir -p ${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
+    #LOG_DIR=${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
 
     # set memcg for htmm
     sudo ${DIR}/scripts/set_htmm_memcg.sh htmm remove
@@ -133,10 +133,13 @@ function func_main() {
 	echo "ERROR: abort -- change the ratio"
 	exit -1
     fi
-    # Update log dir to also specify number of threads
+    # make directory for results
     if [[ "x${BENCH_THREADS}" != "x" ]]; then
         mkdir -p ${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}_${BENCH_THREADS}t
         LOG_DIR=${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}_${BENCH_THREADS}t
+    else
+        mkdir -p ${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
+        LOG_DIR=${DIR}/results/${BENCH_NAME}/${VER}/${NVM_RATIO}
     fi
 
     cat /proc/vmstat | grep -e thp -e htmm -e pgmig > ${LOG_DIR}/before_vmstat.log 
@@ -150,7 +153,10 @@ function func_main() {
     fi
 
     export OMP_NUM_THREADS=${BENCH_THREADS} # Set OMP_NUM_THREADS for benchmarks which use OpenMP
+    # Collect bandwidth
     sudo pcm-memory -csv=${LOG_DIR}/bandwidth.csv &
+    # Collect htmm promotions and demotions every second
+    ${DIR}/scripts/collect_epoch_stats.sh $LOG_DIR 1 &
     ${DIR}/scripts/memory_stat.sh ${LOG_DIR} &
     if [[ "x${BENCH_NAME}" =~ "xsilo" ]]; then
 	${TIME} -f "execution time %e (s)" \
@@ -172,6 +178,7 @@ function func_main() {
 
     sudo killall -9 memory_stat.sh
     sudo killall -9 pcm-memory
+    sudo killall -9 collect_epoch_stats.sh
     cat /proc/vmstat | grep -e thp -e htmm -e pgmig > ${LOG_DIR}/after_vmstat.log
     sleep 2
 

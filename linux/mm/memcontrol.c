@@ -7722,6 +7722,39 @@ static int __init mem_cgroup_hotness_stat_init(void)
 }
 subsys_initcall(mem_cgroup_hotness_stat_init);
 
+static int memcg_htmm_thresholds_show(struct seq_file *m, void *v)
+{
+    struct mem_cgroup *memcg = mem_cgroup_from_css(seq_css(m));
+
+    seq_printf(m, "active_threshold %u\n", memcg->active_threshold);
+    seq_printf(m, "warm_threshold %u\n", memcg->warm_threshold);
+    seq_printf(m, "bp_active_threshold %u\n", memcg->bp_active_threshold);
+    seq_printf(m, "split_threshold %u\n", memcg->split_threshold);
+    seq_printf(m, "split_active_threshold %u\n", memcg->split_active_threshold);
+    seq_printf(m, "cooling_clock %u\n", memcg->cooling_clock);
+    seq_printf(m, "nr_split %u\n", memcg->nr_split);
+    seq_printf(m, "nr_split_tail_idx %u\n", memcg->nr_split_tail_idx);
+
+    return 0;
+}
+
+static struct cftype memcg_htmm_thresholds_file[] = {
+    {
+	.name = "htmm_thresholds",
+	.flags = CFTYPE_NOT_ON_ROOT,
+	.seq_show = memcg_htmm_thresholds_show,
+    },
+    {},
+};
+
+static int __init mem_cgroup_htmm_thresholds_init(void)
+{
+    WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys,
+		memcg_htmm_thresholds_file));
+    return 0;
+}
+subsys_initcall(mem_cgroup_htmm_thresholds_init);
+
 static int memcg_per_node_max_show(struct seq_file *m, void *v)
 {
     struct mem_cgroup *memcg = mem_cgroup_from_css(seq_css(m));
