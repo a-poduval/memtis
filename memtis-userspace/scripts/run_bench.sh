@@ -165,6 +165,7 @@ function func_main() {
     # Collect htmm promotions and demotions every second
     ${DIR}/scripts/collect_epoch_stats.sh $LOG_DIR 1 &
     ${DIR}/scripts/memory_stat.sh ${LOG_DIR} &
+    sudo perf stat -o $LOG_DIR/perf_cycles_stalls.txt -I 1000 -e cycles -e r020002a3 -e r060006a3 &
     if [[ "x${BENCH_NAME}" =~ "xsilo" ]]; then
 	${TIME} -f "execution time %e (s)" \
 	    ${PINNING} ${DIR}/bin/launch_bench_nopid ${BENCH_RUN} 2>&1 \
@@ -183,6 +184,7 @@ function func_main() {
 	    | tee ${LOG_DIR}/output.log
     fi
 
+    sudo killall -9 perf
     sudo killall -9 memory_stat.sh
     sudo killall -9 pcm-memory
     sudo killall -9 collect_epoch_stats.sh
