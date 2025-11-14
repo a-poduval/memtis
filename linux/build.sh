@@ -1,5 +1,5 @@
 sudo apt update
-sudo apt install -y msr-tools sudo build-essential libncurses-dev bison flex libssl-dev libelf-dev fakeroot dwarves
+sudo apt install -y msr-tools sudo build-essential libncurses-dev bison flex libssl-dev libelf-dev fakeroot dwarves linux-tools-$(uname -r) htop numactl pcm
 git apply node1_page_cache.diff
 cp /boot/config-$(uname -r) .config
 scripts/config --disable SYSTEM_TRUSTED_KEYS
