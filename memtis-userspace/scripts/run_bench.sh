@@ -85,6 +85,9 @@ function func_prepare() {
 	    fi
 	fi
 
+        if [[ "x${BENCH_NAME}" =~ "xliblinear" ]]; then
+            export BENCH_THREADS=${BENCH_THREADS} # Export number of threads for liblinear
+        fi
 	if [[ -e ${DIR}/bench_cmds/${BENCH_NAME}.sh ]]; then
 	    source ${DIR}/bench_cmds/${BENCH_NAME}.sh
 	else
@@ -158,6 +161,9 @@ function func_main() {
     if [[ "x${BENCH_THREADS}" != "x" && ! "${BENCH_NAME}" =~ ^gapbs- ]]; then
         BENCH_RUN="${BENCH_RUN_CUSTOMT} ${BENCH_THREADS}"
     fi
+    if [[ "x${BENCH_NAME}" =~ "xliblinear" ]]; then
+        BENCH_RUN="${BENCH_RUN_CUSTOMT}"
+    fi
 
     export OMP_NUM_THREADS=${BENCH_THREADS} # Set OMP_NUM_THREADS for benchmarks which use OpenMP
     # Collect bandwidth
@@ -165,7 +171,7 @@ function func_main() {
     # Collect htmm promotions and demotions every second
     ${DIR}/scripts/collect_epoch_stats.sh $LOG_DIR 1 &
     ${DIR}/scripts/memory_stat.sh ${LOG_DIR} &
-    sudo perf stat -o $LOG_DIR/perf_cycles_stalls.txt -I 1000 -e cycles -e r020002a3 -e r060006a3 &
+    sudo perf stat -o $LOG_DIR/perf_cycles_stalls.txt -I 1000 -e cycles -e r020002a3 -e r060006a3 -e offcore_requests.demand_data_rd -e offcore_requests_outstanding.cycles_with_demand_data_rd &
     if [[ "x${BENCH_NAME}" =~ "xsilo" ]]; then
 	${TIME} -f "execution time %e (s)" \
 	    ${PINNING} ${DIR}/bin/launch_bench_nopid ${BENCH_RUN} 2>&1 \

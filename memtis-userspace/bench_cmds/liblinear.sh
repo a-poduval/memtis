@@ -6,7 +6,8 @@ BENCH_BIN=/mydata/memtis/memtis-userspace/bench_dir/liblinear
 
 #BENCH_RUN="${BENCH_BIN}/train -s 6 -m 20 ${BENCH_BIN}/datasets/kdd12"
 BENCH_RUN="${BENCH_BIN}/train -s 6 ${BENCH_BIN}/datasets/kddb -m 20"
-BENCH_RUN_CUSTOMT="${BENCH_BIN}/train -s 6 ${BENCH_BIN}/datasets/kddb -m "
+#BENCH_RUN_CUSTOMT="${BENCH_BIN}/train -s 6 -m ${BENCH_THREADS} ${BENCH_BIN}/datasets/kddb"
+BENCH_RUN_CUSTOMT="${BENCH_BIN}/train -s 6 -m ${BENCH_THREADS} ${BENCH_BIN}/datasets/kdd12"
 # Liblinear requires a dataset file (kdd12)
 # Please refer to memtis-userspace/bench_dir/README.md for downloading this dataset
 
