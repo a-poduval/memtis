@@ -1,7 +1,8 @@
 #!/bin/bash
 
-BIN=/path/to/benchmark
+BIN=/mydata/memtis/memtis-userspace/bench_dir/XSBench/openmp-threading
 BENCH_RUN="${BIN}/XSBench -t 20 -g 130000 -p 30000000"
+BENCH_RUN_CUSTOMT="${BIN}/XSBench -g 130000 -p 30000000 -t "
 BENCH_DRAM=""
 
 
