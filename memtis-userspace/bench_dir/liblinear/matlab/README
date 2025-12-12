@@ -26,7 +26,10 @@ of LIBLINEAR.
 Installation
 ============
 
-If you would like to build the package, please rely on the following steps.
+On Windows systems, pre-built mex files are already in the directory
+'..\windows', so please just copy them to the matlab directory. Now we
+provide binary files only for 64bit MATLAB on Windows. If you would
+like to re-build the package, please rely on the following steps.
 
 We recommend using make.m on both MATLAB and OCTAVE. Just type 'make'
 to build 'libsvmread.mex', 'libsvmwrite.mex', 'train.mex', and
@@ -163,6 +166,8 @@ A matlab function libsvmwrite writes Matlab matrix to a file in LIBSVM format:
 libsvmwrite('data.txt', label_vector, instance_matrix]
 
 The instance_matrix must be a sparse matrix. (type must be double)
+For windows, `libsvmread.mexw64' and `libsvmwrite.mexw64' are ready in
+the directory `..\windows'.
 
 These codes are prepared by Rong-En Fan and Kai-Wei Chang from National
 Taiwan University.

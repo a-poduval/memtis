@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wconversion -O3 -fPIC -fopenmp
 # CFLAGS += -DCV_OMP
 LIBS = blas/blas.a
 #LIBS = -lblas
-SHVER = 6
+SHVER = 5
 OS = $(shell uname)
 ifeq ($(OS),Darwin)
 	SHARED_LIB_FLAG = -dynamiclib -Wl,-install_name,liblinear.so.$(SHVER)
@@ -32,6 +32,8 @@ linear.o: linear.cpp linear.h
 
 blas/blas.a: blas/*.c blas/*.h
 	make -C blas OPTFLAGS='$(CFLAGS)' CC='$(CC)';
+
+include ../datasets.mk
 
 clean:
 	make -C blas clean
